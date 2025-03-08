@@ -378,9 +378,12 @@ _info "LCMP (Linux + Caddy + MariaDB + PHP) installation start"
 if check_sys rhel; then
     _error_detect "yum install -yq caddy"
 elif check_sys debian || check_sys ubuntu; then
-    _error_detect "curl -fsSL https://dl.lamp.sh/shadowsocks/DEB-GPG-KEY-Teddysun | gpg --dearmor --yes -o /usr/share/keyrings/deb-gpg-key-teddysun.gpg"
-    _error_detect "chmod a+r /usr/share/keyrings/deb-gpg-key-teddysun.gpg"
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/deb-gpg-key-teddysun.gpg] https://dl.lamp.sh/shadowsocks/$(lsb_release -si | tr '[A-Z]' '[a-z]')/ $(lsb_release -sc) main" >/etc/apt/sources.list.d/teddysun.list
+    sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
+    _error_detect "curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg"
+    _error_detect "curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list"
+    # _error_detect "curl -fsSL https://dl.lamp.sh/shadowsocks/DEB-GPG-KEY-Teddysun | gpg --dearmor --yes -o /usr/share/keyrings/deb-gpg-key-teddysun.gpg"
+    # _error_detect "chmod a+r /usr/share/keyrings/deb-gpg-key-teddysun.gpg"
+    # echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/deb-gpg-key-teddysun.gpg] https://dl.lamp.sh/shadowsocks/$(lsb_release -si | tr '[A-Z]' '[a-z]')/ $(lsb_release -sc) main" >/etc/apt/sources.list.d/teddysun.list
     _error_detect "apt-get update"
     _error_detect "apt-get install -y caddy"
 fi
